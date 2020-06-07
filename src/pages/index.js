@@ -5,18 +5,24 @@ import { Helmet } from 'react-helmet'
 import Hero from '../components/hero'
 import Layout from '../components/layout'
 import ArticlePreview from '../components/article-preview'
+import Img from 'gatsby-image'
 
 class RootIndex extends React.Component {
   render() {
     const siteTitle = get(this, 'props.data.site.siteMetadata.title')
     const posts = get(this, 'props.data.allContentfulBlogPost.edges')
-    const [author] = get(this, 'props.data.allContentfulPerson.edges')
+    const [homeImage] = get(this, 'props.data.allContentfulAsset.edges')
 
     return (
       <Layout location={this.props.location}>
         <div style={{ background: '#fff' }}>
           <Helmet title={siteTitle} />
-          <Hero data={author.node} />
+          <div>
+            <Img
+              alt={homeImage.node.name}
+              fluid={homeImage.node.fluid}
+            />
+          </div>
           <div className="wrapper">
             <h2 className="section-headline">Recent articles</h2>
             <ul className="article-list">
@@ -64,26 +70,13 @@ export const pageQuery = graphql`
         }
       }
     }
-    allContentfulPerson(
-      filter: { contentful_id: { eq: "6fdRwgh6LkwlcheruZ9usj" } }
-    ) {
+    allContentfulAsset(filter: {contentful_id: {eq: "1PqH5eAPZ8rfvkpg4BxL3a"}}) {
       edges {
         node {
-          name
-          shortBio {
-            shortBio
+          fluid(background: "rgb:000000", maxHeight: 480, maxWidth: 1180) {
+            ...GatsbyContentfulFluid_tracedSVG
           }
           title
-          heroImage: image {
-            fluid(
-              maxWidth: 1180
-              maxHeight: 480
-              resizingBehavior: PAD
-              background: "rgb:000000"
-            ) {
-              ...GatsbyContentfulFluid_tracedSVG
-            }
-          }
         }
       }
     }
